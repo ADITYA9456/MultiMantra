@@ -31,11 +31,11 @@
 
 ## 📸 Preview
 
-### 🧑‍💻 About Us Section
-![About](./assets/about-us.png)
+
 
 ### 💡 Features Section
-![Features](./assets/features.png)
+![image](https://github.com/user-attachments/assets/5774ed1f-6552-43fa-99e6-9d4d6808362c)
+
 
 > ⚠️ Make sure to place the screenshots in a folder named `assets` in your root directory, or update the image path accordingly.
 
