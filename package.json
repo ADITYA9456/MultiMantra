@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "framer-motion": "^12.7.5",
+    "framer-motion": "^12.23.3",
     "lucide-react": "^0.503.0",
     "mongodb": "^6.16.0",
     "mongoose": "^8.14.1",

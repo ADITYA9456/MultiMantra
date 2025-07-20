@@ -27,18 +27,44 @@ export const initiate = async (amount, to_username, paymentform) => {
 }
 
 
-export const fetchuser = async (username) => {
-    await connectDb()
-    let u = await User.findOne({ username: username })
-    let user = u.toObject({ flattenObjectIds: true })
-    return user
-}
-
 export const fetchpayments = async (username) => {
     await connectDb()
-    // find all payments sorted by decreasing order of amount and flatten object ids
-    let p = await Payment.find({ to_user: username, done: true }).sort({ amount: -1 }).limit(10).lean()
-    return p
+    // Find all payments for this user and convert to plain objects
+    let p = await Payment.find({ to_user: username, done: true }).sort({ amount: -1 }).lean()
+    
+    // Convert to plain objects and serialize dates
+    return p.map(payment => ({
+        _id: payment._id.toString(),
+        name: payment.name,
+        to_user: payment.to_user,
+        oid: payment.oid,
+        message: payment.message,
+        amount: payment.amount,
+        done: payment.done,
+        createdAt: payment.createdAt.toISOString(),
+        updatedAt: payment.updatedAt.toISOString()
+    }))
+}
+
+export const fetchuser = async (username) => {
+    await connectDb()
+    let u = await User.findOne({ username: username }).lean()
+    
+    if (!u) return null
+    
+    // Convert to plain object
+    return {
+        _id: u._id.toString(),
+        name: u.name,
+        email: u.email,
+        username: u.username,
+        profilepic: u.profilepic,
+        coverpic: u.coverpic,
+        razorpayid: u.razorpayid,
+        razorpaysecret: u.razorpaysecret,
+        createdAt: u.createdAt.toISOString(),
+        updatedAt: u.updatedAt.toISOString()
+    }
 }
 
 export const updateProfile = async (data, oldusername) => {
