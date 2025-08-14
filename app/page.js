@@ -291,7 +291,7 @@ export default function Home() {
               transition={{ delay: 0.5, duration: 1 }}
             >
               <p className="text-gray-300 text-xl leading-relaxed">
-                Whether it's managing your daily tasks, sharing links, supporting causes, or shopping online — we bring it all under one roof.
+                Whether it&apos;s managing your daily tasks, sharing links, supporting causes, or shopping online — we bring it all under one roof.
               </p>
               <div className="space-y-4">
                 <motion.span 

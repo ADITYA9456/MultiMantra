@@ -1,41 +1,69 @@
 "use client";
 import { motion } from "framer-motion";
-import { useParams, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function BlogViewPage() {
-    const searchParams = useSearchParams();
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [imageList, setImageList] = useState([]);
-    const [slug, setSlug] = useState("");
+    const params = useParams();
+    const [blog, setBlog] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [isClient, setIsClient] = useState(false);
-
-    const params = useParams(); // ✅ hooks se params le rahe
 
     useEffect(() => {
         setIsClient(true);
-        const titleParam = searchParams.get("title");
-        const contentParam = searchParams.get("content");
-        const imagesParam = searchParams.get("images");
-
-        if (titleParam) setTitle(titleParam);
-        if (contentParam) setContent(contentParam);
-        if (imagesParam) {
+        async function fetchBlog() {
+            setLoading(true);
             try {
-                setImageList(JSON.parse(imagesParam));
+                console.log("Fetching blog with slug:", params.slug);
+                const res = await fetch(`/api/blog?slug=${params.slug}`);
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || "Failed to fetch blog");
+                }
+                
+                console.log("Blog data received:", data);
+                setBlog(data.blog);
             } catch (err) {
-                console.error("Error parsing images:", err);
+                console.error("Error fetching blog:", err);
+                setBlog(null);
+            } finally {
+                setLoading(false);
             }
         }
-
-        if (params?.slug) {
-            setSlug(params.slug);
-        }
-    }, [searchParams, params]);
+        
+        if (params?.slug) fetchBlog();
+    }, [params]);
 
     // Reading time calculation
-    const readingTime = Math.ceil((content.split(' ').length || 0) / 200);
+    const readingTime = blog ? Math.ceil((blog.content?.split(' ').length || 0) / 200) : 0;
+
+    if (loading) return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black">
+            <div className="text-center p-8 rounded-xl bg-gray-900/50 backdrop-blur-md border border-gray-800">
+                <div className="animate-pulse mb-4 text-4xl">✨</div>
+                <h2 className="text-xl font-semibold text-white mb-2">Loading Blog...</h2>
+                <p className="text-gray-400">Please wait while we fetch the content</p>
+            </div>
+        </div>
+    );
+    
+    if (!blog) return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black">
+            <div className="text-center p-8 rounded-xl bg-gray-900/50 backdrop-blur-md border border-red-800/40 max-w-md">
+                <div className="text-4xl mb-4">😞</div>
+                <h2 className="text-xl font-semibold text-white mb-4">Blog Not Found</h2>
+                <p className="text-gray-400 mb-6">We couldn&apos;t find the blog you&apos;re looking for. The blog might have been removed or the URL might be incorrect.</p>
+                <button 
+                    onClick={() => window.location.href = '/blog'} 
+                    className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 transition-all"
+                >
+                    Return to Blog Page
+                </button>
+            </div>
+        </div>
+    );
 
     return (
         <main className="relative min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black overflow-hidden">
@@ -57,10 +85,9 @@ export default function BlogViewPage() {
                 
                 {/* Floating reading elements */}
                 {isClient && Array.from({ length: 8 }).map((_, i) => {
-                    const icons = ['📖', '✨', '💭', '🌟', '📝', '💡', '🎨', '🔖'];
+                    const icons = ["📖", "✨", "💭", "🌟", "📝", "💡", "🎨", "🔖"];
                     const icon = icons[i % icons.length];
                     const size = Math.random() * 15 + 10;
-                    
                     return (
                         <motion.div
                             key={`reading-icon-${i}`}
@@ -103,7 +130,6 @@ export default function BlogViewPage() {
                     }}
                     className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"
                 />
-                
                 <motion.div
                     animate={{
                         scale: [1.2, 1, 1.4],
@@ -119,7 +145,7 @@ export default function BlogViewPage() {
                     className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl"
                 />
             </div>
-
+            
             {/* Enhanced Header Section */}
             <motion.div
                 initial={{ y: -50, opacity: 0 }}
@@ -143,9 +169,9 @@ export default function BlogViewPage() {
                             backgroundPosition: { duration: 5, repeat: Infinity }
                         }}
                     >
-                        {title || slug.replace(/-/g, " ")}
+                        {blog.title || params.slug.replace(/-/g, " ")}
                     </motion.h1>
-
+                    
                     {/* Enhanced Divider */}
                     <motion.div
                         initial={{ scaleX: 0 }}
@@ -153,7 +179,7 @@ export default function BlogViewPage() {
                         transition={{ duration: 1, delay: 0.8 }}
                         className="w-32 h-1 bg-gradient-to-r from-fuchsia-500 to-purple-500 mx-auto rounded-full mb-8"
                     />
-
+                    
                     {/* Blog Meta Info */}
                     <motion.div
                         initial={{ y: 20, opacity: 0 }}
@@ -168,7 +194,6 @@ export default function BlogViewPage() {
                             <span className="text-purple-400">📅</span>
                             <span>{new Date().toLocaleDateString()}</span>
                         </motion.div>
-                        
                         <motion.div
                             className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-md px-4 py-2 rounded-full"
                             whileHover={{ scale: 1.05 }}
@@ -176,18 +201,17 @@ export default function BlogViewPage() {
                             <span className="text-blue-400">⏱️</span>
                             <span>{readingTime} min read</span>
                         </motion.div>
-                        
                         <motion.div
                             className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-md px-4 py-2 rounded-full"
                             whileHover={{ scale: 1.05 }}
                         >
                             <span className="text-green-400">🖼️</span>
-                            <span>{imageList.length} images</span>
+                            <span>{blog.images ? blog.images.length : 0} images</span>
                         </motion.div>
                     </motion.div>
                 </motion.div>
             </motion.div>
-
+            
             {/* Enhanced Content Section */}
             <motion.div
                 initial={{ y: 50, opacity: 0 }}
@@ -215,10 +239,9 @@ export default function BlogViewPage() {
                             transition={{ duration: 12, repeat: Infinity }}
                             className="absolute inset-0 rounded-3xl"
                         />
-                        
                         <div className="relative z-10">
                             {/* Enhanced Image Gallery */}
-                            {imageList.length > 0 && (
+                            {blog.images && blog.images.length > 0 && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -235,9 +258,8 @@ export default function BlogViewPage() {
                                         <span className="text-purple-400">🖼️</span>
                                         Blog Gallery
                                     </motion.h3>
-                                    
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {imageList.map((url, index) => (
+                                        {blog.images.map((url, index) => (
                                             <motion.div
                                                 key={index}
                                                 initial={{ opacity: 0, scale: 0.9 }}
@@ -255,15 +277,17 @@ export default function BlogViewPage() {
                                                 }}
                                                 className="relative group cursor-pointer"
                                             >
-                                                <img
-                                                    src={url}
-                                                    alt={`Blog image ${index + 1}`}
-                                                    className="w-full h-64 object-cover rounded-2xl shadow-2xl transition-all duration-500 group-hover:shadow-purple-500/20"
-                                                    onError={(e) => {
-                                                        e.target.style.display = 'none';
-                                                    }}
-                                                />
-                                                
+                                                <div className="w-full h-64 relative">
+                                                    <Image
+                                                        src={url}
+                                                        alt={`Blog image ${index + 1}`}
+                                                        fill
+                                                        className="object-cover rounded-2xl shadow-2xl transition-all duration-500 group-hover:shadow-purple-500/20"
+                                                        onError={(e) => {
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
+                                                </div>
                                                 {/* Image overlay */}
                                                 <motion.div
                                                     className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -278,7 +302,7 @@ export default function BlogViewPage() {
                                     </div>
                                 </motion.div>
                             )}
-
+                            
                             {/* Enhanced Content */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
@@ -296,7 +320,6 @@ export default function BlogViewPage() {
                                     <span className="text-blue-400">📝</span>
                                     Article Content
                                 </motion.h3>
-                                
                                 <motion.div
                                     className="text-gray-200 text-lg leading-relaxed"
                                     animate={{
@@ -304,8 +327,8 @@ export default function BlogViewPage() {
                                     }}
                                     transition={{ duration: 4, repeat: Infinity }}
                                 >
-                                    {content ? (
-                                        <p className="whitespace-pre-wrap">{content}</p>
+                                    {blog.content ? (
+                                        <p className="whitespace-pre-wrap">{blog.content}</p>
                                     ) : (
                                         <motion.p
                                             className="text-gray-500 italic text-center py-12"
@@ -320,7 +343,7 @@ export default function BlogViewPage() {
                                     )}
                                 </motion.div>
                             </motion.div>
-
+                            
                             {/* Enhanced Bottom Section */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
@@ -343,7 +366,6 @@ export default function BlogViewPage() {
                                     >
                                         <span className="text-purple-400 font-medium">✨ Powered by MultiMantra</span>
                                     </motion.div>
-                                    
                                     <motion.div
                                         className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-blue-500/30"
                                         whileHover={{ scale: 1.05 }}

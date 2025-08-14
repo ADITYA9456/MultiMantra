@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -11,6 +12,8 @@ function Toast({ message, type = "success", isVisible, onClose }) {
         onClose();
       }, 3000);
       return () => clearTimeout(timer);
+  const [blogPublished, setBlogPublished] = useState(false);
+  const [publishedSlug, setPublishedSlug] = useState("");
     }
   }, [isVisible, onClose]);
 
@@ -88,6 +91,8 @@ export default function BlogPage() {
   const [imageList, setImageList] = useState([]);
   const [isClient, setIsClient] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "success", isVisible: false });
+  const [blogPublished, setBlogPublished] = useState(false);
+  const [publishedSlug, setPublishedSlug] = useState("");
 
   useEffect(() => {
     setIsClient(true);
@@ -120,8 +125,6 @@ export default function BlogPage() {
       return;
     }
 
-    const slug = title.toLowerCase().replace(/\s+/g, "-").slice(0, 30);
-
     try {
       showToast("Publishing your blog... ⏳", "success");
       
@@ -134,24 +137,25 @@ export default function BlogPage() {
         body: JSON.stringify({ title, content, images: imageList }),
       });
 
-      if (!res.ok) throw new Error("Failed to save blog in DB");
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to save blog in DB");
+      }
 
+      // Get the slug from the response
+      const slug = data.slug;
+      console.log("Published blog with slug:", slug);
+      
+      // Set blog as published and store the slug
+      setBlogPublished(true);
+      setPublishedSlug(slug);
+      
       showToast("Blog published successfully! 🎉", "success");
-
-      // 2. Redirect to slug page with query
-      setTimeout(() => {
-        const query = new URLSearchParams({
-          title,
-          content,
-          images: JSON.stringify(imageList),
-        }).toString();
-
-        router.push(`/aaa/${slug}?${query}`);
-      }, 1500);
 
     } catch (err) {
       console.error("Error publishing blog:", err);
-      showToast("Failed to publish blog! Please try again. 😞", "error");
+      showToast("Failed to publish blog: " + err.message, "error");
     }
   };
 
@@ -297,6 +301,23 @@ export default function BlogPage() {
           className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-gray-700/50 relative overflow-hidden"
         >
           <div className="relative z-10">
+              {/* Show Get Your Blog button after publish */}
+              {blogPublished && publishedSlug && (
+                <div className="mb-6 flex justify-center">
+                  <Button
+                    className="bg-purple-500 text-white"
+                    onClick={() => {
+                      console.log("Navigating to blog with slug:", publishedSlug);
+                      // Add a small delay to ensure the blog is saved
+                      setTimeout(() => {
+                        router.push(`/aaa/${publishedSlug}`);
+                      }, 1000);
+                    }}
+                  >
+                    🚀 Get Your Blog
+                  </Button>
+                </div>
+              )}
             <motion.h2
               className="text-3xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
             >
@@ -350,9 +371,11 @@ export default function BlogPage() {
                         transition={{ delay: idx * 0.1 }}
                         className="flex items-center gap-3 bg-gray-800/50 p-3 rounded-lg"
                       >
-                        <img
+                        <Image
                           src={url}
                           alt={`Preview ${idx + 1}`}
+                          width={48}
+                          height={48}
                           className="w-12 h-12 object-cover rounded-lg"
                         />
                         <span className="text-sm text-gray-300 flex-1 truncate">{url}</span>

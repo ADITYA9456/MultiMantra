@@ -1,6 +1,7 @@
 "use client"
 import { motion } from 'framer-motion'
 import { signIn, useSession } from "next-auth/react"
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
@@ -102,9 +103,9 @@ const Login = () => {
                 transition={{ delay: 0.6 }}
                 className="text-right mb-6"
             >
-                <a href="/" className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors duration-200 cursor-pointer">
+                <Link href="/" className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors duration-200 cursor-pointer">
                     Forgot your password?
-                </a>
+                </Link>
             </motion.div>
 
             <motion.div 
@@ -171,10 +172,10 @@ const Login = () => {
                 transition={{ delay: 0.8 }}
                 className="mt-8 text-center text-sm text-gray-400"
             >
-                Don't have an account?{" "}
-                <a href="/signup" className="font-medium text-purple-400 hover:text-purple-300 transition-colors duration-200 cursor-pointer">
+                Don&apos;t have an account?{" "}
+                <Link href="/signup" className="font-medium text-purple-400 hover:text-purple-300 transition-colors duration-200 cursor-pointer">
                     Sign up
-                </a>
+                </Link>
             </motion.div>
         </motion.div>
     </div>

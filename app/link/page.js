@@ -185,7 +185,7 @@ const Link = () => {
               className="text-lg md:text-xl max-w-4xl mx-auto text-gray-300 leading-relaxed"
             >
               We help you organize all your important links, content, and socials in
-              one beautiful, customizable page. Whether you're a creator,
+              one beautiful, customizable page. Whether you&apos;re a creator,
               entrepreneur, or brand — make your online presence unforgettable.
             </motion.p>
           </motion.div>

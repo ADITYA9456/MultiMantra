@@ -337,7 +337,7 @@ const Contact = () => {
               transition={{ delay: 0.5, duration: 1.2 }}
               className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed"
             >
-              Have questions or want to collaborate? We'd love to hear from you.
+              Have questions or want to collaborate? We&apos;d love to hear from you.
               <motion.span
                 animate={{ 
                   opacity: [1, 0.4, 1],
@@ -346,7 +346,7 @@ const Contact = () => {
                 transition={{ duration: 3, repeat: Infinity }}
                 className="block mt-3 text-purple-400 font-semibold"
               >
-                ✨ Let's create something amazing together! ✨
+                ✨ Let&apos;s create something amazing together! ✨
               </motion.span>
             </motion.p>
           </motion.div>
@@ -390,7 +390,7 @@ const Contact = () => {
                       backgroundPosition: { duration: 4, repeat: Infinity }
                     }}
                   >
-                    Let's Connect
+                    Let&apos;s Connect
                   </motion.h2>
                   
                   <motion.p
@@ -399,7 +399,7 @@ const Contact = () => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.2, duration: 1.2 }}
                   >
-                    Whether you have a project in mind, need support, or just want to say hello - we're here to help make your digital dreams a reality.
+                    Whether you have a project in mind, need support, or just want to say hello - we&apos;re here to help make your digital dreams a reality.
                   </motion.p>
                   
                   <div className="space-y-8">

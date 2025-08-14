@@ -232,9 +232,9 @@ const About = () => {
                     transition={{ delay: 1, duration: 1 }}
                     className="text-gray-300 text-lg leading-relaxed space-y-6"
                   >
-                    <p>
-                      Whether it's managing your daily tasks, sharing links, supporting causes, or shopping online — we bring it all under one roof.
-                    </p>
+                      <p>
+                        Whether it&apos;s managing your daily tasks, sharing links, supporting causes, or shopping online — we bring it all under one roof.
+                      </p>
                     
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}

@@ -1,4 +1,4 @@
-import React from 'react'
+import Image from 'next/image';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -24,7 +24,7 @@ const Task = () => {
             <div className="relative">
               <input placeholder='Enter Password' className='rounded-full border border-green-500 w-full p-4 py-1' type="password" />
               <span className='absolute right-[3px] top-[4px] cursor-pointer'>
-                <img className='p-1' width={26} src="/img/eye.png" alt="eye" />
+                <Image className='p-1' width={26} height={26} src="/img/eye.png" alt="eye" />
               </span>
             </div>
           </div>

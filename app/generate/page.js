@@ -1,5 +1,6 @@
 "use client"
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
@@ -556,9 +557,11 @@ const Generate = () => {
                                         <h3 className="text-white font-semibold mb-3">Live Preview:</h3>
                                         <div className="flex items-center gap-4">
                                             {pic && (
-                                                <img 
+                                                <Image 
                                                     src={pic} 
                                                     alt="Profile preview" 
+                                                    width={48}
+                                                    height={48}
                                                     className="w-12 h-12 rounded-full object-cover border-2 border-purple-500"
                                                     onError={(e) => {
                                                         e.target.style.display = 'none';

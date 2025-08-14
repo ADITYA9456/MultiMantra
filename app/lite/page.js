@@ -7,7 +7,7 @@ import { FaBolt, FaChartBar, FaLink, FaShieldAlt } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const lite = () => {
+const Lite = () => {
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
@@ -427,4 +427,4 @@ const lite = () => {
     );
 };
 
-export default lite;
+export default Lite;

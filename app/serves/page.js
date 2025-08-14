@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-const serves = () => {
+const Serves = () => {
   const [windowDimensions, setWindowDimensions] = useState({ width: 1200, height: 800 })
   const [isClient, setIsClient] = useState(false)
 
