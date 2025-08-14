@@ -1,8 +1,13 @@
 
 import mongoose from "mongoose";
 
-// Use MongoDB Atlas or local MongoDB URI
-const MONGODB_URI = process.env.MONGODB_URI || `mongodb+srv://multimantra:multimantra123@cluster0.mongodb.net/MultiMantra?retryWrites=true&w=majority`;
+// Use MongoDB Atlas URI from environment variables
+const MONGODB_URI = process.env.MONGODB_URI;
+
+// Make sure we have a valid MongoDB URI
+if (!MONGODB_URI) {
+  console.error('Please define the MONGODB_URI environment variable');
+}
 
 // Track the connection status to avoid multiple connections
 let isConnected = false;

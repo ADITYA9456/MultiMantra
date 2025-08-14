@@ -114,7 +114,7 @@ const Generate = () => {
         };
 
         try {
-            const r = await fetch("http://localhost:3000/api/link", requestOptions)
+            const r = await fetch("/api/link", requestOptions)
             const result = await r.json()
 
             if (result.success) {

@@ -6,10 +6,7 @@ import { connectDB } from "@/public/db/connectDb";
 
 export async function POST(req) {
     try {
-        console.log("POST /api/blog called");
-        
         const body = await req.json();
-        console.log("Request body:", body);
         
         const { title, content, images } = body;
         
