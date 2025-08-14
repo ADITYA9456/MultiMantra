@@ -128,7 +128,7 @@ export default function BlogPage() {
     try {
       showToast("Publishing your blog... ⏳", "success");
       
-      // 1. Save blog to MongoDB
+      // Save to MongoDB
       const res = await fetch("/api/blog", {
         method: "POST",
         headers: {
@@ -152,7 +152,18 @@ export default function BlogPage() {
       setPublishedSlug(slug);
       
       showToast("Blog published successfully! 🎉", "success");
-
+      
+      // Save to localStorage for preview page
+      localStorage.setItem("previewBlogData", JSON.stringify({
+        title,
+        content,
+        images: imageList
+      }));
+      
+      // Navigate to preview page after a short delay
+      setTimeout(() => {
+        router.push('/preview');
+      }, 1000);
     } catch (err) {
       console.error("Error publishing blog:", err);
       showToast("Failed to publish blog: " + err.message, "error");

@@ -509,4 +509,4 @@ const Serves = () => {
   )
 }
 
-export default serves
+export default Serves

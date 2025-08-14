@@ -35,24 +35,66 @@ export const authoptions = NextAuth({
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       if (account.provider == "github") {
-        await connectDb()
-        // Check if the user already exists in the database
-        const currentUser = await User.findOne({ email: email })
-        if (!currentUser) {
-          // Create a new user
-          const newUser = await User.create({
-            email: user.email,
-            username: user.email.split("@")[0],
-          })
+        try {
+          await connectDb();
+          // Check if the user already exists in the database
+          const userEmail = user.email || profile.email;
+          const currentUser = await User.findOne({ email: userEmail });
+          
+          if (!currentUser) {
+            // Create a new user
+            const username = userEmail.split("@")[0];
+            
+            // Check if username exists (to avoid duplicate usernames)
+            const existingUsername = await User.findOne({ username });
+            const finalUsername = existingUsername 
+              ? `${username}${Math.floor(Math.random() * 1000)}` 
+              : username;
+              
+            await User.create({
+              email: userEmail,
+              username: finalUsername,
+              name: user.name || profile.name || finalUsername,
+              profilepic: user.image || profile.avatar_url || profile.picture,
+            });
+          } else {
+            // Update user info if needed
+            if (user.name && !currentUser.name) {
+              currentUser.name = user.name;
+              await currentUser.save();
+            }
+            if (user.image && !currentUser.profilepic) {
+              currentUser.profilepic = user.image;
+              await currentUser.save();
+            }
+          }
+          return true;
+        } catch (error) {
+          console.error("Error in signIn callback:", error);
+          // Still allow sign in even if database operations fail
+          return true;
         }
-        return true
       }
+      return true;
     },
 
     async session({ session, user, token }) {
-      const dbUser = await User.findOne({ email: session.user.email })
-      session.user.name = dbUser.username
-      return session
+      try {
+        if (session?.user?.email) {
+          const dbUser = await User.findOne({ email: session.user.email });
+          if (dbUser) {
+            // Set username from database
+            session.user.name = dbUser.username;
+            // Add any additional user data you want in session
+            session.user.id = dbUser._id.toString();
+            session.user.username = dbUser.username;
+          }
+        }
+        return session;
+      } catch (error) {
+        console.error("Error in session callback:", error);
+        return session;
+      }
     },
   }
 })

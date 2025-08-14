@@ -11,6 +11,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "framer-motion": "^12.23.3",
+    "html2pdf.js": "^0.10.3",
     "lucide-react": "^0.503.0",
     "mongodb": "^6.18.0",
     "mongoose": "^8.17.1",
