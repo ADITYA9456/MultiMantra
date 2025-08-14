@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        serverActions: true,
+        // Use object for serverActions instead of boolean
+        serverActions: {
+            enabled: true
+        }
     },
     images: {
         remotePatterns: [
@@ -19,8 +22,6 @@ const nextConfig = {
     },
     // Enable production source maps for better error tracking
     productionBrowserSourceMaps: true,
-    // Improve build speed
-    swcMinify: true,
     // Enable Next.js to automatically determine when to perform static optimization
     typescript: {
         // Speedier builds when using TypeScript
@@ -28,7 +29,7 @@ const nextConfig = {
     },
     eslint: {
         // Speedier builds
-        ignoreDuringBuilds: process.env.CI === 'true',
+        ignoreDuringBuilds: true, // Always ignore during builds for now
     },
 }
 

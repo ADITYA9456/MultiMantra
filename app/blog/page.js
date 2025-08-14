@@ -12,8 +12,6 @@ function Toast({ message, type = "success", isVisible, onClose }) {
         onClose();
       }, 3000);
       return () => clearTimeout(timer);
-  const [blogPublished, setBlogPublished] = useState(false);
-  const [publishedSlug, setPublishedSlug] = useState("");
     }
   }, [isVisible, onClose]);
 
